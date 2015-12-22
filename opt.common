@@ -19,6 +19,8 @@
 # THE SOFTWARE
 
 getoptname () {
+  # Hack to avoid Intel compiler deps
+  [ "$1" != "${1#/opt/intel/}" ] && exit
   optstart=${1/*\/opt\//}
   # Update the -regex in opt.prov if you change the following list
   optname=${optstart%%/bin/*}
@@ -26,7 +28,5 @@ getoptname () {
   optname=${optname%%/lib64/*}
   # This isn't a binary or library, bail
   [ $optname = $optstart ] && exit
-  # Only handle up to two /s in name - hack to avoid Intel compiler deps
-  [ $optname != ${optname/\/?*\/?*\//} ] && exit
   echo $optname
 }
