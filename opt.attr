@@ -1,0 +1,6 @@
+%__opt_provides            %{_rpmconfigdir}/opt.prov %{buildroot} %{?__filter_GLIBC_PRIVATE:--filter-private}
+%__opt_requires            %{_rpmconfigdir}/opt.req %{buildroot} %{?__filter_GLIBC_PRIVATE:--filter-private}
+%__opt_path                ^/opt/
+%__opt_magic               ^(setuid )?(setgid )?(sticky )?ELF (32|64)-bit.*$
+%__opt_flags               exeonly,magic_and_path
+%__elf_exclude_path        ^/opt/

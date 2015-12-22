@@ -1,0 +1,6 @@
+# Make libfoo.so symlinks require the soname-provide of the target library
+%__optlibsymlink_requires %{_rpmconfigdir}/opt.prov %{buildroot} --soname-only
+%__optlibsymlink_magic    ^symbolic link to .*lib.*\.so\..*$
+%__optlibsymlink_path     ^/opt/
+%__optlibsymlink_flags    magic_and_path
+%__libsymlink_exclude_path ^/opt/
