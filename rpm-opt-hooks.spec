@@ -21,7 +21,7 @@ should be added to the buildroot or a package's BuildRequires.
 
 %prep
 %setup -c -T
-cp -a %SOURCE5 .
+cp -a %SOURCE5 %SOURCE6 .
 
 
 %install
