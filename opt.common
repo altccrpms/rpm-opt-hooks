@@ -20,6 +20,7 @@
 
 getoptname () {
   optstart=${1/*\/opt\//}
+  # Update the -regex in opt.prov if you change the following list
   optname=${optstart%%/bin/*}
   optname=${optname%%/lib/*}
   optname=${optname%%/lib64/*}

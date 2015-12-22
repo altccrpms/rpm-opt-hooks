@@ -41,7 +41,7 @@ while read f
 do
   optname=$(getoptname $f)
   [ -n "$optname" ] && break
-done < <(find $buildroot/opt -type d \( -name bin -o -name lib\* \) 2>&-)
+done < <(find $buildroot/opt -type f -regex '.*/\(bin\|lib\|lib64\)/.*' 2>&-)
 
 # Prefix provides with package's prefix, if any
 if [ -n "$optname" ]; then
