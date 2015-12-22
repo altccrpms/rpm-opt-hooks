@@ -36,31 +36,19 @@ fi
 shift
 elfdepsargs="$@"
 
-# create a temporary file to stash the filelist
-filelist=$(mktemp -u)
-cat > $filelist
-
 # Determine the optname for this package
-optname=$(while read f
+while read f
 do
-  if [ -z "$optname" ]; then
-    optname=$(getoptname $f)
-    if [ -n "$optname" ]; then
-      echo $optname
-      break
-    fi
-  fi
-done < $filelist)
+  optname=$(getoptname $f)
+  [ -n "$optname" ] && break
+done < <(find $buildroot/opt -type d \( -name bin -o -name lib\* \) 2>&-)
 
 # Prefix provides with package's prefix, if any
 if [ -n "$optname" ]; then
-  /usr/lib/rpm/elfdeps --provides $elfdepsargs < $filelist | while read prov
+  /usr/lib/rpm/elfdeps --provides $elfdepsargs | while read prov
   do
     echo "opt($optname)$prov"
   done
 else
-  /usr/lib/rpm/elfdeps --provides $elfdepsargs < $filelist
+  /usr/lib/rpm/elfdeps --provides $elfdepsargs
 fi
-
-# Cleanup
-rm -f $filelist
