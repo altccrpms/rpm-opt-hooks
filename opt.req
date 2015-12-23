@@ -54,8 +54,15 @@ do
     while read libpath
     do
       thisoptname=$(getoptname ${libpath#$buildroot})
-      # Record result in cache if none previous or a postitive result
-      [ "${optnameforlib[$lib]}" = none -o -n "$thisoptname" ] && optnameforlib[$lib]=$thisoptname
+      if [ -n "$thisoptname" ]; then
+        if [ "${optnameforlib[$lib]}" = none ]; then
+          # Record result in cache if none previous and a postitive result
+          optnameforlib[$lib]=$thisoptname
+        elif [ "${optnameforlib[$lib]}" != "$thisoptname" ]; then
+          # Warn if multiple matches
+          echo "opt.req: WARNING: Multiple optnames for $lib: ${optnameforlib[$lib]} $thisoptname" 1>&2
+        fi
+      fi
     done < <(find $buildroot/opt /opt -name $lib 2>&-)
   fi
 
