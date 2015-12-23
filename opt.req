@@ -48,19 +48,20 @@ do
   lib=${req%%(*}
   optname=
   # Check cache
-  if [ -n "${optnameforlib[$lib]}" ]; then
-    [ "${optnameforlib[$lib]}" != none ] && optname=${optnameforlib[$lib]}
-  else
-    libpath=$(find $buildroot/opt /opt -name $lib 2>&-)
-    if [ -n "$libpath" ]; then
-      optname=$(getoptname ${libpath#$buildroot})
-      # Record result in cache
-      optnameforlib[$lib]=$optname
-    else
-      # Record negative result in cache
-      optnameforlib[$lib]=none
-    fi
+  if [ -z "${optnameforlib[$lib]}" ]; then
+    # Record negative result in cache
+    optnameforlib[$lib]=none
+    while read libpath
+    do
+      thisoptname=$(getoptname ${libpath#$buildroot})
+      # Record result in cache if none previous or a postitive result
+      [ "${optnameforlib[$lib]}" = none -o -n "$thisoptname" ] && optnameforlib[$lib]=$thisoptname
+    done < <(find $buildroot/opt /opt -name $lib 2>&-)
   fi
+
+  # Pull from cache
+  [ "${optnameforlib[$lib]}" != none ] && optname=${optnameforlib[$lib]}
+
   # Add prefix if necessary
   [ -n "$optname" ] && req="opt($optname)$req"
   echo "$req"
