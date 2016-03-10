@@ -1,5 +1,5 @@
 Name:           rpm-opt-hooks
-Version:        1
+Version:        2
 Release:        1%{?dist}
 Summary:        RPM dependency generator hooks for packages in /opt
 
@@ -43,5 +43,9 @@ install -Dpm 0644 %{SOURCE4} %{buildroot}%{_rpmconfigdir}/opt.common
 
 
 %changelog
-* Mon Dec 21 2015 Orion Poplawski <orion@cora.nwra.com> 1.0-1
+* Wed Mar 2 2016 Orion Poplawski <orion@cora.nwra.com> 2-1
+- Try to limit requires to same prefix to allow building for multiple prefixes
+  on the same machine/buildroot
+
+* Mon Dec 21 2015 Orion Poplawski <orion@cora.nwra.com> 1-1
 - Initial package

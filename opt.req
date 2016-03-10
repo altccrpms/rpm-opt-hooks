@@ -38,6 +38,17 @@ elfdepsargs="$@"
 
 # Cache
 declare -A optnameforlib
+# Local libs
+declare -A locallib
+
+# Determine the install prefix - two directories up from common install dirs
+prefix=/opt
+while read dir
+do
+  prefix=${dir%/*}
+  prefix=${prefix#$buildroot}
+  break
+done < <(find $buildroot/opt -mindepth 2 -maxdepth 5 -type d '(' -name bin -o -name include -o -name lib -o -name lib64 -o -name share ')' -printf '%h\n' )
 
 # Get the default requres string from elfdeps and 
 # check whether the library exists in /opt.  If yes, prepend
@@ -58,12 +69,14 @@ do
         if [ "${optnameforlib[$lib]}" = none ]; then
           # Record result in cache if none previous and a postitive result
           optnameforlib[$lib]=$thisoptname
-        elif [ "${optnameforlib[$lib]}" != "$thisoptname" ]; then
-          # Warn if multiple matches
+          # Record if this in the buildroot
+          [ "${libpath#$buildroot}" != "$libpath" ] && locallib[$lib]=true
+        elif [ "${optnameforlib[$lib]}" != "$thisoptname" -a "${locallib[$lib]}" != true ]; then
+          # Warn if multiple matches outside of buildroot, but keep the first
           echo "opt.req: WARNING: Multiple optnames for $lib: ${optnameforlib[$lib]} $thisoptname" 1>&2
         fi
       fi
-    done < <(find $buildroot/opt /opt -name $lib 2>&-)
+    done < <(find $buildroot$prefix ${LD_LIBRARY_PATH//:/ } $prefix/*/lib* -name $lib 2>&-)
   fi
 
   # Pull from cache
