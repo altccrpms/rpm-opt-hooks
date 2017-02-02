@@ -1,5 +1,5 @@
 Name:           rpm-opt-hooks
-Version:        2
+Version:        3
 Release:        1%{?dist}
 Summary:        RPM dependency generator hooks for packages in /opt
 
@@ -43,6 +43,9 @@ install -Dpm 0644 %{SOURCE4} %{buildroot}%{_rpmconfigdir}/opt.common
 
 
 %changelog
+* Thu Feb 2 2017 Orion Poplawski <orion@cora.nwra.com> 3-1
+- Handle compiler-only deps for MPI packages
+
 * Wed Mar 2 2016 Orion Poplawski <orion@cora.nwra.com> 2-1
 - Try to limit requires to same prefix to allow building for multiple prefixes
   on the same machine/buildroot

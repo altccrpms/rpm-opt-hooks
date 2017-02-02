@@ -50,6 +50,12 @@ do
   break
 done < <(find $buildroot/opt -mindepth 2 -maxdepth 5 -type d '(' -name bin -o -name include -o -name lib -o -name lib64 -o -name share ')' -printf '%h\n' )
 
+# Path to search for deps
+deppaths=$(echo $prefix/*/lib*)
+
+# If we're an MPI install, we also need to search the compiler paths up one level
+[ -n "$MPI_HOME" ] && deppaths="$deppaths $(echo ${prefix%/*}/*/lib*)"
+
 # Get the default requres string from elfdeps and 
 # check whether the library exists in /opt.  If yes, prepend
 # the appropriate prefix to each requires string
@@ -76,7 +82,7 @@ do
           echo "opt.req: WARNING: Multiple optnames for $lib: ${optnameforlib[$lib]} $thisoptname" 1>&2
         fi
       fi
-    done < <(find $buildroot$prefix ${LD_LIBRARY_PATH//:/ } $prefix/*/lib* -name $lib 2>&-)
+    done < <(find $buildroot$prefix ${LD_LIBRARY_PATH//:/ } $deppaths -name $lib 2>&-)
   fi
 
   # Pull from cache
